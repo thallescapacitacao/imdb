@@ -7,10 +7,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import extensions.carregarBitmap
 
 data class Filme(
     val titulo: String,
@@ -28,11 +28,13 @@ fun App() {
         nota = 9.2,
         ano = 1994
     )
+    val imagem =
+        "https://raw.githubusercontent.com/thallescapacitacao/imdb/master/src/jvmMain/resources/poster_shawshank.jpg"
     MaterialTheme {
         Column {
             Text(text = filme.titulo)
             Image(
-                painter = painterResource(filme.poster),
+                bitmap = imagem.carregarBitmap(),
                 contentDescription = "Pôster",
                 modifier = Modifier.height(200.dp)
             )
