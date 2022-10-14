@@ -2,37 +2,25 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import extensions.carregarBitmap
-
-data class Filme(
-    val titulo: String,
-    val poster: String,
-    val nota: Double,
-    val ano: Int
-)
-
-val filme = Filme(
-    titulo = "The Shawshank Redemption",
-    poster = "poster_shawshank.jpg",
-    nota = 9.2,
-    ano = 1994
-)
-
-const val imagem =
-    "https://raw.githubusercontent.com/thallescapacitacao/imdb/master/src/jvmMain/resources/poster_shawshank.jpg"
+import models.Filme
 
 @Composable
 @Preview
@@ -41,67 +29,94 @@ fun App() {
         colors = darkColors()
     ) {
         Surface {
-            Box(
-                modifier = Modifier
-                    .padding(all = 8.dp)
-                    .width(170.5.dp)
-            ) {
-                Column {
-                    Image(
-                        bitmap = imagem.carregarBitmap(),
-                        contentDescription = "Pôster",
-                        modifier = Modifier
-                            .height(249.dp)
-                            .clip(RoundedCornerShape(5.dp))
+            Box(modifier = Modifier.fillMaxSize()) {
+                val filmes = listOf(
+                    Filme(
+                        titulo = "The Shawshank Redemption",
+                        imagem = "shawshank.jpg",
+                        nota = 9.3,
+                        ano = 1994
+                    ),
+                    Filme(
+                        titulo = "The Godfather",
+                        imagem = "thegodfather.jpg",
+                        nota = 9.2,
+                        ano = 1972
+                    ),
+                    Filme(
+                        titulo = "12 Angry Men",
+                        imagem = "12angrymen.jpg",
+                        nota = 9.0,
+                        ano = 1957
                     )
-                    Row(
-                        modifier = Modifier
-                            .padding(
-                                start = 6.dp,
-                                end = 6.dp,
-                                top = 6.dp,
-                                bottom = 4.dp
-                            )
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .padding(start = 1.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Star,
-                                contentDescription = "Avaliação",
-                                tint = Color.Yellow,
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .padding(horizontal = 2.dp)
-                            )
-                            Text(
-                                text = filme.nota.toString(),
-                                color = Color.White,
-                                fontSize = 14.sp,
-                            )
-                        }
-                        Text(
-                            text = filme.ano.toString(),
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 4.dp)
-                        )
+                )
+                LazyColumn {
+                    items(filmes) { filme ->
+                        Detalhe(filme)
                     }
-                    Text(
-                        text = filme.titulo,
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .height(40.dp)
-                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+fun Detalhe(filme: Filme) {
+    Column(
+        modifier = Modifier
+            .width(200.dp)
+            .padding(16.dp)
+    ) {
+        Image(
+            painter = painterResource(filme.imagem),
+            contentDescription = "capa do filme",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(4.dp))
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = 8.dp,
+                    start = 8.dp,
+                    end = 8.dp
+                ),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "ícone de estrela para a nota",
+                    tint = Color.Yellow,
+                    modifier = Modifier.height(16.dp)
+                )
+                Text(
+                    text = filme.nota.toString(),
+                    modifier = Modifier.padding(start = 2.dp),
+                    color = Color(0xffeeeeee),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Text(
+                text = filme.ano.toString(),
+                color = Color(0xffeeeeee),
+                fontSize = 14.sp
+            )
+        }
+        Text(
+            text = filme.titulo,
+            modifier = Modifier
+                .padding(
+                    start = 16.dp,
+                    top = 8.dp,
+                    end = 16.dp
+                ),
+            fontSize = 12.sp,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
