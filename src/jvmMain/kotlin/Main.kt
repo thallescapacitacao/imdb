@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import models.Filme
+import utils.MovieWebClient
 
 @Composable
 @Preview
@@ -121,6 +122,9 @@ fun Detalhe(filme: Filme) {
 }
 
 fun main() = application {
+    with(MovieWebClient()) {
+        findTop250Movies()
+    }
     Window(onCloseRequest = ::exitApplication, title = "IMDB") {
         App()
     }
