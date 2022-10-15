@@ -1,59 +1,48 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import models.Filme
-import utils.MovieWebClient
+import extensions.loadBitmap
+import models.Movie
+import webclient.MovieWebClient
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview
-fun App() {
+fun App(movies: List<Movie>) {
     MaterialTheme(
         colors = darkColors()
     ) {
         Surface {
             Box(modifier = Modifier.fillMaxSize()) {
-                val filmes = listOf(
-                    Filme(
-                        titulo = "The Shawshank Redemption",
-                        imagem = "shawshank.jpg",
-                        nota = 9.3,
-                        ano = 1994
-                    ),
-                    Filme(
-                        titulo = "The Godfather",
-                        imagem = "thegodfather.jpg",
-                        nota = 9.2,
-                        ano = 1972
-                    ),
-                    Filme(
-                        titulo = "12 Angry Men",
-                        imagem = "12angrymen.jpg",
-                        nota = 9.0,
-                        ano = 1957
-                    )
-                )
-                LazyColumn {
-                    items(filmes) { filme ->
-                        Detalhe(filme)
+                LazyVerticalGrid(
+                    cells = GridCells.Adaptive(minSize = 200.dp)
+                ) {
+                    items(movies) { movie ->
+                        Detail(movie)
                     }
                 }
             }
@@ -62,14 +51,14 @@ fun App() {
 }
 
 @Composable
-fun Detalhe(filme: Filme) {
+fun Detail(movie: Movie) {
     Column(
         modifier = Modifier
             .width(200.dp)
             .padding(16.dp)
     ) {
         Image(
-            painter = painterResource(filme.imagem),
+            bitmap = movie.image.loadBitmap(),
             contentDescription = "capa do filme",
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,7 +83,7 @@ fun Detalhe(filme: Filme) {
                     modifier = Modifier.height(16.dp)
                 )
                 Text(
-                    text = filme.nota.toString(),
+                    text = movie.rating.toString(),
                     modifier = Modifier.padding(start = 2.dp),
                     color = Color(0xffeeeeee),
                     fontSize = 14.sp,
@@ -102,13 +91,13 @@ fun Detalhe(filme: Filme) {
                 )
             }
             Text(
-                text = filme.ano.toString(),
+                text = movie.year.toString(),
                 color = Color(0xffeeeeee),
                 fontSize = 14.sp
             )
         }
         Text(
-            text = filme.titulo,
+            text = movie.title,
             modifier = Modifier
                 .padding(
                     start = 16.dp,
@@ -122,10 +111,14 @@ fun Detalhe(filme: Filme) {
 }
 
 fun main() = application {
-    with(MovieWebClient()) {
-        findTop250Movies()
+    val client = MovieWebClient()
+    var list by remember { mutableStateOf(listOf<Movie>()) }
+    client.findTop250Movies() { movies ->
+        movies?.let {
+            list = it
+        }
     }
     Window(onCloseRequest = ::exitApplication, title = "IMDB") {
-        App()
+        App(movies = list)
     }
 }

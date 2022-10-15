@@ -1,11 +1,11 @@
 package services
 
-import dtos.Search
+import data.Top250Data
 import retrofit2.Call
 import retrofit2.http.GET
+import webclient.IMDB_API_KEY
 
 interface MovieService {
-
-    @GET("k_...")
-    fun findTop250Movies(): Call<Search>
+    @GET(IMDB_API_KEY)
+    fun findTop250Movies(): Call<Top250Data>
 }
