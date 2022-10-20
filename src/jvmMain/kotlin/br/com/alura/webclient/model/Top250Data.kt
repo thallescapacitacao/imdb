@@ -1,6 +1,6 @@
-package data
+package br.com.alura.webclient.model
 
-import models.Movie
+import br.com.alura.model.Movie
 
 data class Top250Data(
     val items: List<Top250DataDetail>,

@@ -1,5 +1,5 @@
-// Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-import androidx.compose.desktop.ui.tooling.preview.Preview
+package br.com.alura.ui.content
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -7,14 +7,11 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,35 +20,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
-import extensions.loadBitmap
-import models.Movie
-import webclient.MovieWebClient
+import br.com.alura.extension.loadBitmap
+import br.com.alura.model.Movie
 
+@Suppress("OPT_IN_IS_NOT_ENABLED")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-@Preview
-fun App(movies: List<Movie>) {
-    MaterialTheme(
-        colors = darkColors()
-    ) {
-        Surface {
-            Box(modifier = Modifier.fillMaxSize()) {
-                LazyVerticalGrid(
-                    cells = GridCells.Adaptive(minSize = 200.dp)
-                ) {
-                    items(movies) { movie ->
-                        Detail(movie)
-                    }
-                }
-            }
+fun MovieList(movies: List<Movie>) {
+    LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 150.dp)) {
+        items(movies) { movie ->
+            MovieItem(movie)
         }
     }
 }
 
 @Composable
-fun Detail(movie: Movie) {
+fun MovieItem(movie: Movie) {
     Column(
         modifier = Modifier
             .width(200.dp)
@@ -107,18 +91,5 @@ fun Detail(movie: Movie) {
             fontSize = 12.sp,
             textAlign = TextAlign.Center,
         )
-    }
-}
-
-fun main() = application {
-    val client = MovieWebClient()
-    var list by remember { mutableStateOf(listOf<Movie>()) }
-    client.findTop250Movies() { movies ->
-        movies?.let {
-            list = it
-        }
-    }
-    Window(onCloseRequest = ::exitApplication, title = "IMDB") {
-        App(movies = list)
     }
 }

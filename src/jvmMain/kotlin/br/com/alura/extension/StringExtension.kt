@@ -1,4 +1,4 @@
-package extensions
+package br.com.alura.extension
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.loadImageBitmap

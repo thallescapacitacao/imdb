@@ -1,4 +1,4 @@
-package models
+package br.com.alura.model
 
 data class Movie(
     val title: String,

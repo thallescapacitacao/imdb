@@ -1,8 +1,8 @@
-package webclient
+package br.com.alura.webclient
 
+import br.com.alura.webclient.service.MovieService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import services.MovieService
 
 class RetrofitInit {
 
